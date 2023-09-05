@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height='wrap_content'
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/find_person_images"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/img1"/>
+
+    <TextView
+        android:id="@+id/find_person_titles"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/find_person_images"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:text="제목"/>
+
+    <TextView
+        android:id="@+id/find_person_days"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/find_person_titles"
+        android:layout_alignParentRight="true"
+        android:text="2023.09.05"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/find_person_images"
+        android:layout_below="@id/find_person_titles"
+        android:text="이름 : " />
+
+    <TextView
+        android:id="@+id/find_person_names"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/name"
+        android:layout_below="@id/find_person_titles"
+        android:text="홍길동"/>
+</RelativeLayout>
