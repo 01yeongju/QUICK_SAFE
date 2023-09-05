@@ -27,6 +27,11 @@
 
         </activity>
 
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCflLNXtXGqd77sRiM3kFEgDRFcKn_iWMI" /> <!-- API키 붙여넣기 -->
+
     </application>
 
 </manifest>
