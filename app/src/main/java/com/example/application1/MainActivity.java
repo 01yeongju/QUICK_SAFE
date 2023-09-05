@@ -11,24 +11,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private FirebaseAuth mFirebaseAuth;
 
 
     private BottomNavigationView bottomNavigationView; // 하단 네비게이션 뷰
-    private FragmentManager fm;
+    private FragmentManager fm, fragmentManager; // fragmentManager는 map관련
     private FragmentTransaction ft;
     private Frag1_c frag1;
     private Frag2_map frag2;
     private Frag3_mypage frag3;
+
+    // map 관련
+    private GoogleMap googleMap;
 
 
 
@@ -78,6 +85,14 @@ public class MainActivity extends AppCompatActivity {
         frag3 = new Frag3_mypage();
         setFrag(1); // 첫 프로그먼트 화면을 무엇으로 지정해줄것인지 -> 여기선 대피소가 기본화면으로
 
+        // map 관련
+        SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.googleMap);
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().add(R.id.googleMap, mapFragment).commit();
+        }
+        mapFragment.getMapAsync(this);
+
     }
 
     // 프래그먼트 교체가 일어나는 실행문
@@ -99,6 +114,29 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
 
+    }
+
+    // map 관련
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+
+        this.googleMap = googleMap;
+
+        LatLng location = new LatLng(36.351073954997, 127.29801308566);
+
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(location);
+        markerOptions.title("한밭대");
+        markerOptions.snippet("대학교");
+
+        googleMap.addMarker(markerOptions);
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+
+
+        // 현재위치
+        // if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
     }
 
 
