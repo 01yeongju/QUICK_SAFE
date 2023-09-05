@@ -11,8 +11,7 @@
         android:id="@+id/find_person_images"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/img1"/>
+        android:layout_marginRight="20dp" />
 
     <TextView
         android:id="@+id/find_person_titles"
@@ -20,16 +19,14 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/find_person_images"
         android:textSize="20dp"
-        android:textStyle="bold"
-        android:text="제목"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/find_person_days"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/find_person_titles"
-        android:layout_alignParentRight="true"
-        android:text="2023.09.05"/>
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:id="@+id/name"
@@ -44,6 +41,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/name"
-        android:layout_below="@id/find_person_titles"
-        android:text="홍길동"/>
+        android:layout_below="@id/find_person_titles" />
 </RelativeLayout>
