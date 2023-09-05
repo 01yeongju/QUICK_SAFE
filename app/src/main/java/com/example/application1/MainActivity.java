@@ -29,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
                 // 로그아웃 하기
                 mFirebaseAuth.signOut();
                 // 방법1. 로그아웃 후 로그인 페이지로 이동
-                // Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                // startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
                 // 방법2. app 종료
-                finish();
+                //finish();
             }
         });
 
