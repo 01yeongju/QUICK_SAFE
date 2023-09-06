@@ -54,6 +54,9 @@ public class Frag1_c extends Fragment {
         Lv1 = view.findViewById(R.id.view1);
         Lv2 = view.findViewById(R.id.view2);
 
+        Lv1.setVisibility(View.INVISIBLE);
+        Lv2.setVisibility(View.INVISIBLE);
+
         return view;
     }
 
