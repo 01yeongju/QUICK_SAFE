@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 public class Frag3_mypage extends Fragment {
     private View view;
-    private LinearLayout linear1, linear2;
+    private LinearLayout linear1, linear2, linear3, linear4;
 
     @Nullable
     @Override
@@ -25,9 +25,14 @@ public class Frag3_mypage extends Fragment {
 
         linear1 = view.findViewById(R.id.medical_info_frame);
         linear2 = view.findViewById(R.id.call_frame);
+        linear3 = view.findViewById(R.id.condition_frame);
+        linear4 = view.findViewById(R.id.report_frame);
+
 
         linear1.setVisibility(View.INVISIBLE);
         linear2.setVisibility(View.INVISIBLE);
+        linear3.setVisibility(View.INVISIBLE);
+        linear4.setVisibility(View.INVISIBLE);
 
         return view;
     }
@@ -38,6 +43,8 @@ public class Frag3_mypage extends Fragment {
 
         View medical_info_Button = view.findViewById(R.id.medical_info);
         View call_Button = view.findViewById(R.id.call);
+        View condition_Button = view.findViewById(R.id.condition);
+        View report_Button = view.findViewById(R.id.report);
 
         // '의료정보' 버튼 선택
         medical_info_Button.setOnClickListener(new View.OnClickListener() {
@@ -45,6 +52,8 @@ public class Frag3_mypage extends Fragment {
             public void onClick(View v) {
                 linear1.setVisibility(View.VISIBLE);
                 linear2.setVisibility(View.INVISIBLE);
+                linear3.setVisibility(View.INVISIBLE);
+                linear4.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -54,6 +63,30 @@ public class Frag3_mypage extends Fragment {
             public void onClick(View v) {
                 linear1.setVisibility(View.INVISIBLE);
                 linear2.setVisibility(View.VISIBLE);
+                linear3.setVisibility(View.INVISIBLE);
+                linear4.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        // '상태신고' 버튼 선택
+        condition_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linear1.setVisibility(View.INVISIBLE);
+                linear2.setVisibility(View.INVISIBLE);
+                linear3.setVisibility(View.VISIBLE);
+                linear4.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        // '기록' 버튼 선택
+        report_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linear1.setVisibility(View.INVISIBLE);
+                linear2.setVisibility(View.INVISIBLE);
+                linear3.setVisibility(View.INVISIBLE);
+                linear4.setVisibility(View.VISIBLE);
             }
         });
     }
