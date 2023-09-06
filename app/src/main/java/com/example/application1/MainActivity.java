@@ -10,19 +10,26 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.Manifest;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private FirebaseAuth mFirebaseAuth;
 
-
+    // bottom navigation 관련
     private BottomNavigationView bottomNavigationView; // 하단 네비게이션 뷰
     private FragmentManager fm, fragmentManager; // fragmentManager는 map관련
     private FragmentTransaction ft;
@@ -39,9 +46,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Frag2_map frag2;
     private Frag3_mypage frag3;
 
-    // map 관련
-    private GoogleMap googleMap;
 
+    // map 관련
+    private final int FINE_PERMISSON_CODE = 1;
+    private GoogleMap googleMap;
+    Location currentLocation;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
 
     @Override
@@ -68,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 탈퇴처리
         // mFirebaseAuth.getCurrentUser().delete();
 
+        
+        // bottom navigation관련
         bottomNavigationView = findViewById((R.id.bottomNavi));
         bottomNavigationView.setSelectedItemId(R.id.action_map); // 첫화면 대피소 뜰때, 아이콘도 똑같이 바뀌도록
         bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
@@ -91,12 +103,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setFrag(1); // 첫 프로그먼트 화면을 무엇으로 지정해줄것인지 -> 여기선 대피소가 기본화면으로
 
         // map 관련
-        SupportMapFragment mapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.googleMap);
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().add(R.id.googleMap, mapFragment).commit();
-        }
-        mapFragment.getMapAsync(this);
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        getLastLocation();
+
+
 
     }
 
@@ -104,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setFrag(int n) {
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
-        switch(n) {
+        switch (n) {
             case 0:
                 ft.replace(R.id.main_frame, frag1);
                 ft.commit();
@@ -123,11 +134,39 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // map 관련
 
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSON_CODE);
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null){
+                    currentLocation = location;
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.googleMap);
+                    if (mapFragment == null) {
+                        mapFragment = SupportMapFragment.newInstance();
+                        getSupportFragmentManager().beginTransaction().add(R.id.googleMap, mapFragment).commit();
+                    }
+                    mapFragment.getMapAsync(MainActivity.this);
+                }
+            }
+        });
+
+    }
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
         this.googleMap = googleMap;
-
+        // 현재 위치 마커 표시
+        LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        googleMap.addMarker(new MarkerOptions().position(location).title("My Location"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        
+        /* 한밭대 마커 표시
         LatLng location = new LatLng(36.351073954997, 127.29801308566);
 
         MarkerOptions markerOptions = new MarkerOptions();
@@ -138,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.addMarker(markerOptions);
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        */
 
         /*
         // 현재위치
@@ -186,4 +226,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
     */
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == FINE_PERMISSON_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            }else {
+                Toast.makeText(this, "Location permission is denied, please allow the permission!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
