@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 탈퇴처리
         // mFirebaseAuth.getCurrentUser().delete();
 
-        
+
         // bottom navigation관련
         bottomNavigationView = findViewById((R.id.bottomNavi));
         bottomNavigationView.setSelectedItemId(R.id.action_map); // 첫화면 대피소 뜰때, 아이콘도 똑같이 바뀌도록
@@ -103,12 +103,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setFrag(1); // 첫 프로그먼트 화면을 무엇으로 지정해줄것인지 -> 여기선 대피소가 기본화면으로
 
         // map 관련
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
-
-
-
     }
 
     // 프래그먼트 교체가 일어나는 실행문
@@ -145,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSuccess(Location location) {
                 if (location != null){
                     currentLocation = location;
+                    // 앱 시작 시 지도 초기화 및 현재 위치 가져오기
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.googleMap);
                     if (mapFragment == null) {
                         mapFragment = SupportMapFragment.newInstance();
@@ -161,11 +158,25 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
         this.googleMap = googleMap;
+        googleMap.setMyLocationEnabled(true);
         // 현재 위치 마커 표시
         LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         googleMap.addMarker(new MarkerOptions().position(location).title("My Location"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
-        
+
+        googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                // 현재 위치 마커 표시
+                if (currentLocation != null) {
+                    LatLng myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(myLocation).title("My Location"));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                }
+                return true; // 이벤트 소비 (카메라 이동 실행)
+            }
+        });
+
         /* 한밭대 마커 표시
         LatLng location = new LatLng(36.351073954997, 127.29801308566);
 
@@ -178,54 +189,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
         */
-
-        /*
-        // 현재위치
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            googleMap.setMyLocationEnabled(true);
-        } else {
-            checkLocationPermissionWithRationale();
-        }
-        */
     }
-    /*
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    private void checkLocationPermissionWithRationale() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                new AlertDialog.Builder(this)
-                        .setTitle("위치정보")
-                        .setMessage("이 앱을 사용하기 위해서는 위치정보에 접근이 필요합니다. 위치정보 접근을 허용하여 주세요.")
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
-                        }).create().show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        googleMap.setMyLocationEnabled(true);
-                    }
-                } else {
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }
-    */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
