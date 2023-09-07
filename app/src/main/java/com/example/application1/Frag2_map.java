@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -123,13 +125,44 @@ public class Frag2_map extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.googleMap);
 
-        // 현재 위치 버튼 활성화
-        googleMap.setMyLocationEnabled(true);
+
+        //googleMap.setPadding(0, 12, 0, 100);
 
         // 확대/축소 버튼 활성화
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
+
+        // 현재 위치 버튼 활성화
+        googleMap.setMyLocationEnabled(true);
+        uiSettings.setMyLocationButtonEnabled(true);
+        // 현재 위치 버튼 위치 설정
+        View locationButton = ((View) mapFragment.getView().findViewById(Integer.parseInt("1")).
+                getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
+        // 화면 오른쪽 하단에서 버튼을 100dp 띄우기 위해 아래와 같이 설정
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+        rlp.setMargins(0, 0, 12, 380); // 조정할 여백을 지정합니다.
+
+        /*
+        // 현재 위치 버튼 초기화 및 클릭 리스너 설정
+        ImageButton myLocationButton = view.findViewById(R.id.myLocationButton);
+        myLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 현재 위치 버튼 클릭 시 동작 구현
+                if (currentLocation != null) {
+                    LatLng myLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(myLocation).title("My Location"));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+                }
+            }
+        });
+        */
 
         if (currentLocation != null) {
             // 현재 위치 마커 표시
