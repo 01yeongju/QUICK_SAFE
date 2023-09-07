@@ -1,11 +1,14 @@
 package com.example.application1;
 
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +28,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.util.List;
+
 public class Frag2_map extends Fragment implements OnMapReadyCallback {
     private View view;
 
@@ -34,13 +40,58 @@ public class Frag2_map extends Fragment implements OnMapReadyCallback {
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
+    // 검색창
+    private SearchView mapSearchView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag2_map, container, false);
+
+        // 검색창
+        mapSearchView = view.findViewById(R.id.mapSearch);
+
         // map 관련
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext());
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.googleMap);
         getLastLocation();
+
+        // 검색창
+        mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+
+                String location = mapSearchView.getQuery().toString();
+                List<Address> addressList = null;
+
+                if (location != null || !location.equals("")) {
+
+                    Geocoder geocoder = new Geocoder(requireContext());
+
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (addressList != null && !addressList.isEmpty()) {
+                        Address address = addressList.get(0);
+                        LatLng latLing = new LatLng(address.getLatitude(), address.getLongitude());
+                        googleMap.addMarker(new MarkerOptions().position(latLing).title(location));
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLing, 15));
+                    } else {
+                        Toast.makeText(requireContext(), "Location not found", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+        mapFragment.getMapAsync(this);
 
         return view;
     }
@@ -80,10 +131,15 @@ public class Frag2_map extends Fragment implements OnMapReadyCallback {
         UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
 
-        // 현재 위치 마커 표시
-        LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        googleMap.addMarker(new MarkerOptions().position(location).title("My Location"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        if (currentLocation != null) {
+            // 현재 위치 마커 표시
+            LatLng location = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(location).title("My Location"));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+
+            // 현재 위치로 지도 이동
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15));
+        }
 
         googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
             @Override
