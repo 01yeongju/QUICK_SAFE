@@ -36,7 +36,7 @@
         android:id="@+id/btn_register"
         android:layout_width="280dp"
         android:layout_height="35dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="265dp"
         android:background="#F39A9A"
         android:text="가입 완료"
         android:textColor="#FFFFFF"
