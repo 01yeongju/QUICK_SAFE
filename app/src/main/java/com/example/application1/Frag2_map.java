@@ -1,10 +1,12 @@
 package com.example.application1;
 
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +31,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class Frag2_map extends Fragment implements OnMapReadyCallback {
@@ -200,4 +206,32 @@ public class Frag2_map extends Fragment implements OnMapReadyCallback {
             }
         }
     }
+    
+    // csv파일 읽기
+    private void loadData() throws IOException, CsvException {
+        AssetManager assetManager = requireActivity().getAssets();
+        InputStream inputStream = assetManager.open("data_Shelter.csv");
+        CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream, "EUC-KR"));
+
+        List<String[]> allContent = csvReader.readAll();
+        for (String[] content : allContent) {
+            if (content.length >= 6) { // CSV 파일이 최소한 6개의 열을 가져야 합니다.
+                String number = content[0]; // 번호
+                String facilityName = content[1]; // 시설명건물명
+                String coordinateX = content[2]; // 좌표정보(x)
+                String coordinateY = content[3]; // 좌표정보(y)
+                //String fullAddress = content[4]; // 소재지전체주소
+                String roadAddress = content[5]; // 도로명전체주소
+                //String postalCode = content[6]; // 도로명우편번호
+
+                // 여기서 가져온 데이터를 사용하거나 출력할 수 있습니다.
+                // 예를 들어, Log를 사용하여 데이터를 로그에 출력할 수 있습니다.
+                Log.d("csv", "번호: " + number + " 시설명건물명: " + facilityName + " 좌표정보(x): " + coordinateX + " 좌표정보(y): " + coordinateY + " 도로명전체주소: " + roadAddress);
+            }
+        }
+        csvReader.close();
+    }
+
+
+
 }
