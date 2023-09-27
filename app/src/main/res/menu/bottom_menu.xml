@@ -3,15 +3,27 @@
 
     <item
         android:id="@+id/action_community"
-        android:icon = "@drawable/ic_baseline_textsms_24"
+        android:icon = "@drawable/ic_baseline_people_alt_24"
         android:enabled="true"
         android:title = "커뮤니티" />
+
+    <item
+        android:id="@+id/action_livemessage"
+        android:icon = "@drawable/ic_baseline_mail_24"
+        android:enabled="true"
+        android:title = "실시간" />
 
     <item
         android:id="@+id/action_map"
         android:icon = "@drawable/ic_baseline_location_on_24"
         android:enabled="true"
         android:title = "대피소" />
+
+    <item
+        android:id="@+id/action_guide"
+        android:icon = "@drawable/ic_baseline_report_gmailerrorred_24"
+        android:enabled="true"
+        android:title = "국민행동요령" />
 
     <item
         android:id="@+id/action_mypage"

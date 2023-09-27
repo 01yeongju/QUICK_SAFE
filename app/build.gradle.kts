@@ -41,6 +41,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.opencsv:opencsv:5.6")
+    implementation("org.jsoup:jsoup:1.16.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

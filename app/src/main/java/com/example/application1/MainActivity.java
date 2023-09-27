@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity { // implements OnMapReadyCa
     private Frag1_c frag1;
     private Frag2_map frag2;
     private Frag3_mypage frag3;
+    private Frag4_livemessage frag4;
+    private Frag5_guide frag5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,10 @@ public class MainActivity extends AppCompatActivity { // implements OnMapReadyCa
                     setFrag(1);
                 } else if (itemId == R.id.action_mypage) {
                     setFrag(2);
+                } else if (itemId == R.id.action_livemessage) {
+                    setFrag(3);
+                } else if (itemId == R.id.action_guide) {
+                    setFrag(4);
                 }
             }
         });
@@ -69,6 +75,8 @@ public class MainActivity extends AppCompatActivity { // implements OnMapReadyCa
         frag1 = new Frag1_c();
         frag2 = new Frag2_map();
         frag3 = new Frag3_mypage();
+        frag4 = new Frag4_livemessage();
+        frag5 = new Frag5_guide();
         setFrag(1); // 첫 프로그먼트 화면을 무엇으로 지정해줄것인지 -> 여기선 대피소가 기본화면으로
 
     }
@@ -88,6 +96,14 @@ public class MainActivity extends AppCompatActivity { // implements OnMapReadyCa
                 break;
             case 2:
                 ft.replace(R.id.main_frame, frag3);
+                ft.commit();
+                break;
+            case 3:
+                ft.replace(R.id.main_frame, frag4);
+                ft.commit();
+                break;
+            case 4:
+                ft.replace(R.id.main_frame, frag5);
                 ft.commit();
                 break;
         }
