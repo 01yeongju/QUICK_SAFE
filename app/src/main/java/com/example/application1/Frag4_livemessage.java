@@ -2,15 +2,19 @@ package com.example.application1;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -48,52 +52,22 @@ public class Frag4_livemessage extends Fragment {
         // messageTextView = view.findViewById(R.id.message_textview);
 
         super.onCreate(savedInstanceState);
-        // setContentView(R.layout.activity_main);
-        messageTextView = view.findViewById(R.id.message_textview);
-        final Bundle bundle = new Bundle();
+        webView = view.findViewById(R.id.webView);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true); // allow the js
 
-        new Thread(){
-            @Override
-            public void run() {
-                Document doc = null;
-                try {
-                    // https://www.safekorea.go.kr/idsiSFK/neo/sfk/cs/sfc/dis/disasterMsgList.jsp?menuSeq=679
-                    doc = Jsoup.connect("https://m.safekorea.go.kr/idsiSFK/neo/main_m/dis/disasterDataList.html").get();
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //화면이 계속 켜짐
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER);
 
-                    Elements ulElements = doc.select("ul#gen");
-                    Log.d("MyTag", "Content: " + ulElements);
+        webView.setWebViewClient(new WebViewClient());
+        webView.loadUrl("https://m.safekorea.go.kr/idsiSFK/neo/main_m/dis/disasterDataList.html");
 
-                    Elements liElements = ulElements.select("li.has-map");
-                    Log.d("MyTag", "Content: " + liElements);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
-                    Elements aElements = doc.select("ul#gen li.has-map a[href^=javascript:selectList(205779)]");
-                    Log.d("MyTag", "Content: " + aElements);
-
-                    Elements ahref = doc.select("a[href^=javascript:selectList(205779)]");
-                    Log.d("MyTag", "Href: " + ahref);
-
-                    /*
-                    Bundle bundle = new Bundle();
-                    bundle.putString("content", ahref); //핸들러를 이용해서 Thread()에서 가져온 데이터를 메인 쓰레드에 보내준다.
-                    Message msg = handler.obtainMessage();
-                    msg.setData(bundle);
-                    handler.sendMessage(msg); */
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
         return view;
     }
-
-    Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            messageTextView.setText(bundle.getString("content"));
-            return true;
-        }
-    });
 
 }
