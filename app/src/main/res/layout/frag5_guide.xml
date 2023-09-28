@@ -30,5 +30,10 @@
         android:elevation="5dp"
         android:iconifiedByDefault="false"
         android:queryHint="Search" />
+    <!--
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" /> -->
 
 </LinearLayout>
