@@ -18,7 +18,7 @@
         android:textStyle="bold" />
 
     <SearchView
-        android:id="@+id/mapSearch"
+        android:id="@+id/messageSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -30,12 +30,33 @@
         android:iconifiedByDefault="false"
         android:queryHint="Search" />
 
-    <FrameLayout
+    <TextView
+        android:id="@+id/message_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text=" 재난문자"
+        android:textSize="30sp"
+        android:textStyle="bold"/>
+
+    <!--
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="610dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="10dp" >
+
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+    </ScrollView> -->
 
 
 </LinearLayout>
